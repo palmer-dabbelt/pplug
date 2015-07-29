@@ -1,0 +1,32 @@
+LANGUAGES   += c++
+COMPILEOPTS += -std=c++11
+COMPILEOPTS += -pedantic
+COMPILEOPTS += -Wall
+COMPILEOPTS += -Wextra
+COMPILEOPTS += -Werror
+
+# Allows C++ code to link against its own libraries
+COMPILEOPTS += -Isrc
+
+# The pplug daemon.  This proxies notifications to listeners.
+BINARIES    += pplugd
+SOURCES     += pplugd.c++
+
+# Changes the value of a property
+BINARIES    += pplug-change
+SOURCES     += pplug-change.c++
+
+# Reads the value of a set of properties.  This read is guarnteed to
+# be atomic.
+BINARIES    += pplug-read
+SOURCES     += pplug-read.c++
+
+# Watches a set of properties for changes, printing to stdout every
+# time one changes.
+BINARIES    += pplug-watch
+SOURCES     += pplug-watch.c++
+
+# Checks to see if a set of properties has settled -- exit(0)ing if
+# the given set of properties has not changed since the given time.
+BINARIES    += pplug-settle
+SOURCES     += pplug-settle.c++
