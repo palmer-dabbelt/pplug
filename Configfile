@@ -6,11 +6,8 @@ COMPILEOPTS += -Wextra
 COMPILEOPTS += -Werror
 
 # Allows C++ code to link against its own libraries
+LANGUAGES   += c++
 COMPILEOPTS += -Isrc
-
-# The pplug daemon.  This proxies notifications to listeners.
-BINARIES    += pplugd
-SOURCES     += pplugd.c++
 
 # Changes the value of a property
 BINARIES    += pplug-change
