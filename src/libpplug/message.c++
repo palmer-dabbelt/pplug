@@ -18,7 +18,12 @@
  * along with pplug.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int main(int argc __attribute__((unused)),
-         const char **argv __attribute__((unused)))
+#include "message.h++"
+using namespace libpplug;
+
+message::message(const std::string& property,
+                 const std::string& value)
+    : _property(property),
+      _value(value)
 {
 }

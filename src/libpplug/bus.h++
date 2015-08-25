@@ -18,7 +18,30 @@
  * along with pplug.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int main(int argc __attribute__((unused)),
-         const char **argv __attribute__((unused)))
-{
+#ifndef LIBPPLUG__BUS_HXX
+#define LIBPPLUG__BUS_HXX
+
+#include <psqlite/connection.h++>
+#include <memory>
+#include "message.h++"
+#include "message_table.h++"
+
+namespace libpplug {
+    /* The bus routes all pplug messages. */
+    class bus {
+    private:
+        psqlite::connection::ptr _db;
+        std::shared_ptr<message_table> _message_table;
+
+    public:
+        /* Opens a connection to the pplug bus. */
+        bus(void);
+
+    public:
+        /* Synchronously sends a message over the bus, returning when
+         * it has been committed to stable storage somewhere. */
+        int send(const std::shared_ptr<message>& m);
+    };
 }
+
+#endif

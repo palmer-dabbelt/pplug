@@ -18,7 +18,26 @@
  * along with pplug.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int main(int argc __attribute__((unused)),
-         const char **argv __attribute__((unused)))
-{
+#ifndef LIBPPLUG__MESSAGE_TABLE_HXX
+#define LIBPPLUG__MESSAGE_TABLE_HXX
+
+#include <psqlite/table.h++>
+#include <psqlite/connection.h++>
+
+namespace libpplug {
+    class message_table {
+    private:
+        psqlite::table::ptr _table;
+        psqlite::connection::ptr _db;
+
+    public:
+        message_table(const psqlite::connection::ptr& db);
+
+    public:
+        void set(const std::string& property,
+                 const std::string& value,
+                 uint64_t unix_nanoseconds);
+    };
 }
+
+#endif

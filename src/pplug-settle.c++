@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2015 Palmer Dabbelt
- *   <palmer.dabbelt@eecs.berkeley.edu>
+ *   <palmer@dabbelt.com>
  *
  * This file is part of pplug
  * 

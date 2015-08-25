@@ -18,7 +18,29 @@
  * along with pplug.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int main(int argc __attribute__((unused)),
-         const char **argv __attribute__((unused)))
-{
+#ifndef LIBPPLUG__MESSAGE_HXX
+#define LIBPPLUG__MESSAGE_HXX
+
+#include <memory>
+#include <vector>
+
+namespace libpplug {
+    /* */
+    class message {
+    private:
+        const std::string _property;
+        const std::string _value;
+
+    public:
+        /* Creates a new message using the current system time, in
+         * case you want to send one. */
+        message(const std::string& property,
+                const std::string& value);
+
+    public:
+        const std::string& property(void) const { return _property; }
+        const std::string& value(void) const { return _value; }
+    };
 }
+
+#endif

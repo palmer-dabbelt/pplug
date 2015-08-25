@@ -5,9 +5,31 @@ COMPILEOPTS += -Wall
 COMPILEOPTS += -Wextra
 COMPILEOPTS += -Werror
 
+GENERATE    += version.h
+
 # Allows C++ code to link against its own libraries
 LANGUAGES   += c++
 COMPILEOPTS += -Isrc
+
+# I'm going to try and use TCLAP as a command-line argument parser.
+LANGUAGES   += c++
+COMPILEOPTS += `ppkg-config tclap --cflags`
+LINKOPTS    += `ppkg-config tclap --libs`
+
+# The whole history is stored in a database
+LANGUAGES   += c++
+COMPILEOPTS += `ppkg-config psqlite --cflags`
+LINKOPTS    += `ppkg-config psqlite --libs`
+
+# This handles date parsing
+LANGUAGES   += c++
+COMPILEOPTS += `ppkg-config libputil-chrono --cflags`
+LINKOPTS    += `ppkg-config libputil-chrono --libs`
+
+# I'm not going to let people configure the directory this gets put
+# into.
+LANGUAGES   += c++
+COMPILEOPTS += -DPPLUG_BASE_DIR=\"/var/run/pplug\"
 
 # Changes the value of a property
 BINARIES    += pplug-change

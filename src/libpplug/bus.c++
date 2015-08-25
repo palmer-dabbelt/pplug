@@ -18,7 +18,29 @@
  * along with pplug.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int main(int argc __attribute__((unused)),
-         const char **argv __attribute__((unused)))
+#include "bus.h++"
+#include "message_table.h++"
+#include <libputil/chrono/datetime.h++>
+#include <fcntl.h>
+#include <gitdate.h>
+#include <unistd.h>
+using namespace libpplug;
+
+static const std::string base_path = "/run/pplug/metadata.sqlite";
+
+bus::bus(void)
+    : _db(std::make_shared<psqlite::connection>(base_path)),
+      _message_table(std::make_shared<message_table>(_db))
 {
+}
+
+int bus::send(const std::shared_ptr<message>& m)
+{
+    auto time = putil::chrono::datetime::now(CLOCK_MONOTONIC);
+
+    _message_table->set(m->property(),
+                        m->value(),
+                        time.unix_nanoseconds());
+
+    return 0;
 }
