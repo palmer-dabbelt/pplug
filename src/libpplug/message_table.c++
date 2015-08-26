@@ -19,9 +19,21 @@
  */
 
 #include "message_table.h++"
+#include <iomanip>
+#include <sstream>
 using namespace libpplug;
 
 static inline psqlite::table::ptr make_table(void);
+
+template<typename T>
+static inline std::string int_to_hex(T i)
+{
+  std::stringstream stream;
+  stream << std::setfill ('0') << std::setw(sizeof(T)*2) 
+         << std::hex << i;
+  return stream.str();
+}
+
 
 message_table::message_table(const psqlite::connection::ptr& db)
     : _table(make_table()),
@@ -37,7 +49,7 @@ void message_table::set(const std::string& property,
     auto map = std::map<std::string, std::string>();
     map["property"] = property;
     map["value"] = value;
-    map["time"] = std::to_string(unix_nanoseconds);
+    map["time"] = int_to_hex(unix_nanoseconds);
     auto row = std::make_shared<psqlite::row>(map);
 
     auto resp = _db->insert(_table, row);
