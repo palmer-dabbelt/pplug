@@ -44,3 +44,18 @@ int bus::send(const std::shared_ptr<message>& m)
 
     return 0;
 }
+
+std::vector<std::shared_ptr<message>>
+bus::atomic_read(const std::vector<std::string>& properties)
+{
+    auto transaction = _db->exclusive_transaction();
+
+    std::vector<std::shared_ptr<message>> out;
+    for (const auto& property: properties) {
+        auto m = _message_table->read_newest(property);
+        if (m != NULL)
+            out.push_back(m);
+    }
+
+    return out;
+}

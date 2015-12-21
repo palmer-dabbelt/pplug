@@ -62,6 +62,27 @@ void message_table::set(const std::string& property,
     }
 }
 
+std::shared_ptr<message> message_table::read_newest(const std::string& prop)
+{
+    auto resp = _db->select(_table, "property='%s' ORDER BY time DESC LIMIT 1",
+                            prop.c_str());
+    switch (resp->return_value()) {
+    case psqlite::error_code::SUCCESS:
+        break;
+    case psqlite::error_code::FAILED_UNIQUE:
+        abort();
+        break;
+    }
+
+    if (resp->result_count() == 0)
+        return NULL;
+
+    return std::make_shared<message>(
+        resp->rowi(0)->value("property"),
+        resp->rowi(0)->value("value")
+        );
+}
+
 psqlite::table::ptr make_table(void)
 {
     std::vector<psqlite::column::ptr> out;

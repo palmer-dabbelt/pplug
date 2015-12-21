@@ -18,7 +18,37 @@
  * along with pplug.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int main(int argc __attribute__((unused)),
-         const char **argv __attribute__((unused)))
+#include "version.h"
+#include <libpplug/bus.h++>
+#include <tclap/CmdLine.h>
+
+int main(int argc, const char **argv)
 {
+    try {
+        TCLAP::CmdLine cmd(
+            "pplug-change: changes a pplug property to have a new value",
+            ' ',
+            PCONFIGURE_VERSION
+            );
+
+        TCLAP::UnlabeledMultiArg<std::string> props(
+            "properties",
+            "List of property names",
+            true,
+            "");
+        cmd.add(props);
+
+        cmd.parse(argc, argv);
+
+        auto bus = std::make_shared<libpplug::bus>();
+        for (const auto& message: bus->atomic_read(props.getValue()))
+            std::cout << message->property() << " " << message->value() << "\n";
+
+        return 0;
+    } catch (...) {
+        fprintf(stderr, "excepting parsing command-line arguments\n");
+        abort();
+    }
+
+    return 0;
 }

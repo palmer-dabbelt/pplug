@@ -23,6 +23,7 @@
 
 #include <psqlite/table.h++>
 #include <psqlite/connection.h++>
+#include "message.h++"
 
 namespace libpplug {
     class message_table {
@@ -34,9 +35,15 @@ namespace libpplug {
         message_table(const psqlite::connection::ptr& db);
 
     public:
+        /* Sets the "current" value of a property to a particular
+         * value, with the actual current time passed in as an
+         * argument (that could be in the past). */
         void set(const std::string& property,
                  const std::string& value,
                  uint64_t unix_nanoseconds);
+
+        /*  */
+        std::shared_ptr<message> read_newest(const std::string& prop);
     };
 }
 

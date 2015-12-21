@@ -41,6 +41,13 @@ namespace libpplug {
         /* Synchronously sends a message over the bus, returning when
          * it has been committed to stable storage somewhere. */
         int send(const std::shared_ptr<message>& m);
+
+        /* Atomicly reads the set of properties listed, returning the
+         * latest message from any of them that have messages that
+         * exist. */
+        std::shared_ptr<message> atomic_read(const std::string& property);
+        std::vector<std::shared_ptr<message>>
+        atomic_read(const std::vector<std::string>& properties);
     };
 }
 
