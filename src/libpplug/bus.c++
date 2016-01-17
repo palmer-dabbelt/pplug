@@ -26,7 +26,7 @@
 #include <unistd.h>
 using namespace libpplug;
 
-static const std::string base_path = "/run/pplug/metadata.sqlite";
+static const std::string base_path = PPLUG_BASE_DIR "/metadata.sqlite";
 
 bus::bus(void)
     : _db(std::make_shared<psqlite::connection>(base_path)),
