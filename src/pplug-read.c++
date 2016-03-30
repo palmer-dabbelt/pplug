@@ -42,7 +42,7 @@ int main(int argc, const char **argv)
 
         auto bus = std::make_shared<libpplug::bus>();
         for (const auto& message: bus->atomic_read(props.getValue()))
-            std::cout << message->property() << " " << message->value() << "\n";
+            std::cout << "{ \"" << message->property() << "\"" << " : \"" << message->value() << "\" }\n";
 
         return 0;
     } catch (...) {
