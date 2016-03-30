@@ -30,6 +30,7 @@ namespace libpplug {
     private:
         const std::string _property;
         const std::string _value;
+        const size_t _unix_nanoseconds;
 
     public:
         /* Creates a new message using the current system time, in
@@ -37,9 +38,14 @@ namespace libpplug {
         message(const std::string& property,
                 const std::string& value);
 
+        message(const std::string& property,
+                const std::string& value,
+                const size_t& unix_nanoseconds);
+
     public:
         const std::string& property(void) const { return _property; }
         const std::string& value(void) const { return _value; }
+        size_t unix_nanoseconds() const { return _unix_nanoseconds; }
     };
 }
 

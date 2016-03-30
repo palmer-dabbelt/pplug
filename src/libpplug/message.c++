@@ -19,11 +19,30 @@
  */
 
 #include "message.h++"
+#include <libputil/chrono/datetime.h++>
 using namespace libpplug;
+
+static size_t now(void);
 
 message::message(const std::string& property,
                  const std::string& value)
     : _property(property),
-      _value(value)
+      _value(value),
+      _unix_nanoseconds(now())
 {
+}
+
+message::message(const std::string& property,
+                 const std::string& value,
+                 const size_t& unix_nanoseconds)
+    : _property(property),
+      _value(value),
+      _unix_nanoseconds(unix_nanoseconds)
+{
+}
+
+size_t now(void)
+{
+    auto time = putil::chrono::datetime::now(CLOCK_MONOTONIC);
+    return time.unix_nanoseconds();
 }

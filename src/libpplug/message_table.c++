@@ -29,7 +29,8 @@ template<typename T>
 static inline std::string int_to_hex(T i)
 {
   std::stringstream stream;
-  stream << std::setfill ('0') << std::setw(sizeof(T)*2) 
+  stream << "0x"
+         << std::setfill ('0') << std::setw(sizeof(T)*2) 
          << std::hex << i;
   return stream.str();
 }
@@ -79,7 +80,8 @@ std::shared_ptr<message> message_table::read_newest(const std::string& prop)
 
     return std::make_shared<message>(
         resp->rowi(0)->value("property"),
-        resp->rowi(0)->value("value")
+        resp->rowi(0)->value("value"),
+        strtoull(resp->rowi(0)->value("time").c_str(), NULL, 16)
         );
 }
 

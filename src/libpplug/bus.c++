@@ -20,7 +20,6 @@
 
 #include "bus.h++"
 #include "message_table.h++"
-#include <libputil/chrono/datetime.h++>
 #include <fcntl.h>
 #include <gitdate.h>
 #include <unistd.h>
@@ -36,11 +35,9 @@ bus::bus(void)
 
 int bus::send(const std::shared_ptr<message>& m)
 {
-    auto time = putil::chrono::datetime::now(CLOCK_MONOTONIC);
-
     _message_table->set(m->property(),
                         m->value(),
-                        time.unix_nanoseconds());
+                        m->unix_nanoseconds());
 
     return 0;
 }
