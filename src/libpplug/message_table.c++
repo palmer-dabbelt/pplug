@@ -25,17 +25,6 @@ using namespace libpplug;
 
 static inline psqlite::table::ptr make_table(void);
 
-template<typename T>
-static inline std::string int_to_hex(T i)
-{
-  std::stringstream stream;
-  stream << "0x"
-         << std::setfill ('0') << std::setw(sizeof(T)*2) 
-         << std::hex << i;
-  return stream.str();
-}
-
-
 message_table::message_table(const psqlite::connection::ptr& db)
     : _table(make_table()),
       _db(db)
@@ -50,7 +39,7 @@ void message_table::set(const std::string& property,
     auto map = std::map<std::string, std::string>();
     map["property"] = property;
     map["value"] = value;
-    map["time"] = int_to_hex(unix_nanoseconds);
+    map["time"] = std::to_string(unix_nanoseconds);
     auto row = std::make_shared<psqlite::row>(map);
 
     auto resp = _db->insert(_table, row);
@@ -90,7 +79,7 @@ psqlite::table::ptr make_table(void)
     std::vector<psqlite::column::ptr> out;
     out.push_back(std::make_shared<psqlite::column_t<std::string>>("property"));
     out.push_back(std::make_shared<psqlite::column_t<std::string>>("value"));
-    out.push_back(std::make_shared<psqlite::column_t<std::string>>("time"));
+    out.push_back(std::make_shared<psqlite::column_t<uint64_t>>("time"));
     return std::make_shared<psqlite::table>("PPLUG__messages", out);
 }
 
