@@ -56,3 +56,18 @@ bus::atomic_read(const std::vector<std::string>& properties)
 
     return out;
 }
+
+std::vector<std::shared_ptr<message>>
+bus::wait_then_read(const std::vector<std::string>& properties,
+                    size_t unix_nanoseconds)
+{
+    while (true) {
+        auto messages = atomic_read(properties);
+        for (const auto& message: messages)
+            if (message->unix_nanoseconds() > unix_nanoseconds)
+                return messages;
+
+        // FIXME: This should use something smarter than just a sleep.
+        sleep(10);
+    }
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Palmer Dabbelt
+ * Copyright (C) 2016 Palmer Dabbelt
  *   <palmer@dabbelt.com>
  *
  * This file is part of pplug
@@ -18,7 +18,50 @@
  * along with pplug.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int main(int argc __attribute__((unused)),
-         const char **argv __attribute__((unused)))
+#include "version.h"
+#include <libpplug/bus.h++>
+#include <tclap/CmdLine.h>
+
+int main(int argc, const char **argv)
 {
+    try {
+        TCLAP::CmdLine cmd(
+            "pplug-watch: waits for a set of pplug properties to change",
+            ' ',
+            PCONFIGURE_VERSION
+            );
+
+        TCLAP::UnlabeledMultiArg<std::string> props(
+            "properties",
+            "List of property names",
+            true,
+            "");
+        cmd.add(props);
+
+        cmd.parse(argc, argv);
+
+        auto bus = std::make_shared<libpplug::bus>();
+        size_t last_change = 0;
+        while (true) {
+            auto messages = bus->wait_then_read(props.getValue(), last_change);
+
+            std::cout << "{ ";
+            for (const auto& message: messages) {
+                if (message->unix_nanoseconds() > last_change)
+                    last_change = message->unix_nanoseconds();
+
+                std::cout << "\""
+                          << message->property()
+                          << "\" : \""
+                          << message->value()
+                          << "\", ";
+            }
+            std::cout << "}" << std::endl;
+        }
+    } catch(...) {
+        fprintf(stderr, "exception parsing command-line arguments\n");
+        abort();
+    }
+
+    return 0;
 }

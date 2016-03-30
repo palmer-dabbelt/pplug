@@ -48,6 +48,13 @@ namespace libpplug {
         std::shared_ptr<message> atomic_read(const std::string& property);
         std::vector<std::shared_ptr<message>>
         atomic_read(const std::vector<std::string>& properties);
+
+        /* Waits for a value in the given property set to be updated to have a
+         * newer modification date than the given one, returning the entire set
+         * upon change.  */
+       std::vector<std::shared_ptr<message>>
+       wait_then_read(const std::vector<std::string>& properties,
+                      size_t unix_nanoseconds);
     };
 }
 
