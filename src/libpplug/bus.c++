@@ -35,9 +35,14 @@ bus::bus(void)
 
 int bus::send(const std::shared_ptr<message>& m)
 {
+    auto transaction = _db->exclusive_transaction();
+
     _message_table->set(m->property(),
                         m->value(),
                         m->unix_nanoseconds());
+
+    _message_table->clear_older_than(m->property(),
+                                     m->unix_nanoseconds() - (1ULL << 32));
 
     return 0;
 }

@@ -44,6 +44,11 @@ namespace libpplug {
 
         /* Returns the newest message value in the set */
         std::shared_ptr<message> read_newest(const std::string& prop);
+
+        /* Removes all messages of the given property that are older than the
+         * given time. */
+        void clear_older_than(const std::string& property,
+                              uint64_t unix_nanoseconds);
     };
 }
 

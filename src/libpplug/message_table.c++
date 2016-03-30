@@ -74,6 +74,14 @@ std::shared_ptr<message> message_table::read_newest(const std::string& prop)
         );
 }
 
+void message_table::clear_older_than(const std::string& prop,
+                                     uint64_t unix_nanoseconds)
+{
+    auto resp = _db->remove(_table, "property='%s' AND time<'%s'",
+                            prop.c_str(),
+                            std::to_string(unix_nanoseconds).c_str());
+}
+
 psqlite::table::ptr make_table(void)
 {
     std::vector<psqlite::column::ptr> out;
