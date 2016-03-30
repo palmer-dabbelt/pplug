@@ -42,7 +42,7 @@ namespace libpplug {
                  const std::string& value,
                  uint64_t unix_nanoseconds);
 
-        /*  */
+        /* Returns the newest message value in the set */
         std::shared_ptr<message> read_newest(const std::string& prop);
     };
 }
