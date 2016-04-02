@@ -23,6 +23,8 @@
 #include <fcntl.h>
 #include <gitdate.h>
 #include <unistd.h>
+#include <sys/inotify.h>
+#include <stdlib.h>
 using namespace libpplug;
 
 static const std::string base_path = PPLUG_BASE_DIR "/metadata.sqlite";
@@ -66,13 +68,30 @@ std::vector<std::shared_ptr<message>>
 bus::wait_then_read(const std::vector<std::string>& properties,
                     size_t unix_nanoseconds)
 {
+    auto inotify_fd = inotify_init();
+    if (inotify_fd < 0) {
+        perror("unable to open inotify descriptor");
+        abort();
+    }
+
+    if (inotify_add_watch(inotify_fd, base_path.c_str(), IN_MODIFY) < 0) {
+        perror("Unable to add inotify watch");
+        abort();
+    }
+
     while (true) {
         auto messages = atomic_read(properties);
-        for (const auto& message: messages)
-            if (message->unix_nanoseconds() > unix_nanoseconds)
+        for (const auto& message: messages) {
+            if (message->unix_nanoseconds() > unix_nanoseconds) {
+                close(inotify_fd);
                 return messages;
+            }
+        }
 
-        // FIXME: This should use something smarter than just a sleep.
-        sleep(10);
+        struct inotify_event event;
+        if (read(inotify_fd, &event, sizeof(event)) < 0) {
+            perror("inotify read");
+            abort();
+        }
     }
 }
