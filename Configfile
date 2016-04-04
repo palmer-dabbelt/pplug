@@ -29,7 +29,7 @@ LINKOPTS    += `ppkg-config libputil-chrono --libs`
 # I'm not going to let people configure the directory this gets put
 # into.
 LANGUAGES   += c++
-COMPILEOPTS += -DPPLUG_BASE_DIR=\"/home/palmer/.local/run/pplug\"
+COMPILEOPTS += -DPPLUG_BASE_DIR=\"/var/run/pplug\"
 
 # Changes the value of a property
 BINARIES    += pplug-change
