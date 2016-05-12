@@ -1,0 +1,16 @@
+#!/sbin/openrc-run
+
+description="Create and initialize pplug database"
+
+depend()
+{
+	after localmount
+}
+
+start()
+{
+	mkdir -p /var/run/pplug
+	pplug-change -p "run" -d "on"
+	chgrp -R pplug /var/run/pplug
+	chmod g+rw /var/run/pplug/*
+}
